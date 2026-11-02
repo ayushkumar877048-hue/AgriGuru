@@ -248,7 +248,7 @@ export default function AgriGuruApp() {
     "Explain photosynthesis in simple terms"
   ];
 
-  const handleSendMessage = async (textToSend) => {
+ const handleSendMessage = async (textToSend) => {
     const query = textToSend || chatInput;
     if (!query.trim() || isAiLoading) return;
 
@@ -276,15 +276,21 @@ export default function AgriGuruApp() {
         }
       };
 
-      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AQ.Ab8RN6L1RKACmy5DXb3B6ZGy2mx0hqbTZzfCWWRH3NaT0Z8Mmg1`;
+      // Clean URL without ?key=
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`;
       
       const response = await fetch(apiUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer AQ.Ab8RN6L1RKACmy5DXb3B6ZGy2mx0hqbTZzfCWWRH3NaT0Z8Mmg1'
+        },
         body: JSON.stringify(payload)
       });
       
       const result = await response.json();
+      console.log("Gemini API Response:", result); // Helpful for debugging
+
       let rawAiText = result.candidates?.[0]?.content?.parts?.[0]?.text || `Here is detailed information regarding "${query}": AgriGuru AI provides comprehensive insights across agricultural science, crop planning, and general inquiries.`;
       
       const aiText = rawAiText.replace(/\*/g, '');
